@@ -2077,6 +2077,39 @@ input,textarea,select{
 }
 </style>
 </head>
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
+<script>
+Kakao.init('29b2c40433b3928450db406728cf3ae5');
+function loginWithKakao(){
+  Kakao.Auth.login({
+    success: function(auth){
+      Kakao.API.request({
+        url: '/v2/user/me',
+        success: function(res){
+          var name = res.kakao_account.profile.nickname;
+          var img = res.kakao_account.profile.profile_image_url;
+          localStorage.setItem('after_user', JSON.stringify({nickname:name, profile:img}));
+          alert(name + '님, 애프터에 오신 걸 환영해요!');
+          location.reload();
+        },
+        fail: function(e){ alert('프로필을 가져오지 못했어요'); }
+      });
+    },
+    fail: function(e){ alert('카카오 로그인에 실패했어요'); }
+  });
+}
+// 화면 오른쪽 아래에 노란 카카오 버튼 자동 추가
+var kbtn = document.createElement('button');
+kbtn.textContent = '💛 카카오로 시작하기';
+kbtn.onclick = loginWithKakao;
+kbtn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;background:#FEE500;color:#191919;border:none;padding:14px 20px;border-radius:999px;font-weight:700;font-size:15px;box-shadow:0 4px 16px rgba(0,0,0,0.2);cursor:pointer;';
+document.body.appendChild(kbtn);
+// 이미 로그인한 사람이면 이름 표시
+try{
+  var u = JSON.parse(localStorage.getItem('after_user')||'null');
+  if(u){ kbtn.textContent = '💛 ' + u.nickname + '님 안녕하세요'; }
+}catch(e){}
+</script>
 <body>
   <div id="root"></div>
   
