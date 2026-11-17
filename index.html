@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>애프터 - After</title>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo",sans-serif;background:#f6f1ea;color:#1a1a1a}
+.top{max-width:430px;margin:0 auto;padding:18px 20px 0}
+.phone{max-width:430px;margin:16px auto 30px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.12);min-height:680px}
+.header{padding:22px 22px 0;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:26px;font-weight:900;letter-spacing:-.5px}
+.logo span{color:#ff5a5a}
+.badge{font-size:11px;background:#111;color:#fff;padding:6px 10px;border-radius:999px}
+.hero{padding:22px}
+.hero h1{font-size:30px;line-height:1.25;letter-spacing:-.8px}
+.hero p{margin-top:10px;color:#666;line-height:1.6;font-size:14px}
+.kakao-btn{width:100%;margin-top:20px;background:#FEE500;border:none;padding:16px;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.kakao-btn:active{transform:scale(.98)}
+.phone-btn{width:100%;margin-top:10px;background:#f2f2f2;border:none;padding:14px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer}
+.card{margin:18px 22px 0;background:#fff7e8;border-radius:18px;padding:18px}
+.card h3{font-size:16px}
+.card p{font-size:13px;color:#666;margin-top:6px;line-height:1.6}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px 22px}
+.item{background:#fafafa;border-radius:16px;padding:16px;min-height:110px}
+.item b{font-size:15px}
+.item p{font-size:12px;color:#777;margin-top:6px;line-height:1.5}
+.profile{display:none;padding:22px}
+.profile h2{font-size:24px}
+.avatar{width:72px;height:72px;border-radius:50%;background:#FEE500;display:flex;align-items:center;justify-content:center;font-size:32px;margin:16px 0}
+.logout{margin-top:16px;background:#111;color:#fff;border:none;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer}
+.notice{padding:0 22px 22px;font-size:12px;color:#999;line-height:1.6;text-align:center}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="top">
+  <div style="background:#111;color:#fff;padding:10px 14px;border-radius:999px;display:flex;justify-content:space-between;font-size:12px"><span>● 웹앱 MVP</span><span>애프터</span></div>
+</div>
+<div class="phone">
+  <div class="header"><div class="logo">AFTER<span>.</span></div><div class="badge" id="loginState">로그인 전</div></div>
+
+  <!-- 로그인 전 화면 -->
+  <div id="beforeLogin">
+    <div class="hero">
+      <h1>설레는 만남,<br>애프터에서 시작해요</h1>
+      <p>카카오로 3초만에 시작할 수 있어요.<br>설정 화면 없이 바로 카카오 로그인으로 연결돼요.</p>
+      <button class="kakao-btn" onclick="loginWithKakao()">💛 카카오로 시작하기</button>
+      <button class="phone-btn" onclick="alert('전화번호 로그인은 준비 중이에요. 카카오로 먼저 시작해 보세요!')">전화번호로 시작하기</button>
+    </div>
+    <div class="card"><h3>💛 왜 카카로 시작하나요?</h3><p>닉네임과 프로필 사진만 가져와요. 비밀번호를 따로 만들 필요가 없어요.</p></div>
+    <div class="grid">
+      <div class="item"><b>오늘의 인연</b><p>취향이 맞는 사람을 매일 추천해드려요.</p></div>
+      <div class="item"><b>안심 인증</b><p>카카오 인증으로 가짜 프로필을 줄여요.</p></div>
+      <div class="item"><b>애프터 데이트</b><p>카페 · 전시 · 산책 코스를 제안해요.</p></div>
+      <div class="item"><b>대화 시작</b><p>어색하지 않은 첫 마디를 도와줘요.</p></div>
+    </div>
+  </div>
+
+  <!-- 로그인 후 화면 -->
+  <div id="afterLogin" class="profile">
+    <p style="font-size:13px;color:#888">로그인 완료 🎉</p>
+    <h2 id="welcomeText">안녕하세요!</h2>
+    <div class="avatar" id="avatar">💛</div>
+    <p id="userInfo" style="color:#555;line-height:1.7;font-size:14px"></p>
+    <div class="card"><h3>오늘의 추천</h3><p>카카오 프로필로 만든 내 프로필이 준비됐어요. 이제 매칭을 시작해 볼까요?</p></div>
+    <button class="kakao-btn" onclick="alert('매칭 시작! 오늘의 인연을 찾고 있어요.')">오늘의 인연 보기 →</button>
+    <button class="logout" onclick="logout()">로그아웃</button>
+  </div>
+
+  <div class="notice">프로토타입 미리보기 · 실제 전송되지 않아요<br>카카오 로그인 실패 시 주소창의 주소를 카카오 디벨로퍼스 Redirect URI에 추가해 주세요.</div>
+</div>
+
+<script>
+var JS_KEY = '29b2c40433b3928450db406728cf3ae5';
+var REDIRECT_URI = location.origin + '/';
+try{ Kakao.init(JS_KEY); }catch(e){}
+
+function loginWithKakao(){
+  // 데모 설정 화면을 거치지 않고 카카오로 바로 이동
+  Kakao.Auth.authorize({ redirectUri: REDIRECT_URI });
+}
+function logout(){
+  try{ Kakao.Auth.logout(function(){ localStorage.removeItem('after_user'); location.href = location.origin + '/'; }); }
+  catch(e){ localStorage.removeItem('after_user'); location.reload(); }
+}
+function showUser(u){
+  document.getElementById('beforeLogin').classList.add('hidden');
+  document.getElementById('afterLogin').style.display='block';
+  document.getElementById('loginState').textContent = u.nickname + '님 로그인 중';
+  document.getElementById('welcomeText').textContent = u.nickname + '님, 환영해요!';
+  document.getElementById('userInfo').innerHTML = '닉네임: <b>'+u.nickname+'</b><br>로그인 방식: 카카오<br>상태: 인증 완료';
+  if(u.profile){ document.getElementById('avatar').innerHTML = '<img src="'+u.profile+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'; }
+}
+// 콜백 처리: ?code= 가 있으면 토큰 교환 없이 데모 프로필로 표시하지 않고, 로컬 정보가 있으면 복원
+(function(){
+  var params = new URLSearchParams(location.search);
+  var code = params.get('code');
+  if(code){
+    // 실제 운영에서는 백엔드에서 토큰 교환이 필요하지만, MVP에서는 로그인 성공으로 처리하고 코드 제거
+    var saved = localStorage.getItem('after_user');
+    if(saved){
+      try{ showUser(JSON.parse(saved)); }catch(e){}
+    } else {
+      // 코드가 왔다는 건 카카오 인증 성공. 닉네임을 물어보고 저장
+      var nick = prompt('카카오 로그인 성공! 사용할 닉네임을 입력해 주세요', '애프터 유저');
+      if(nick){
+        var u = {nickname: nick, profile: ''};
+        localStorage.setItem('after_user', JSON.stringify(u));
+        showUser(u);
+      }
+    }
+    history.replaceState({}, '', REDIRECT_URI);
+    return;
+  }
+  var saved2 = localStorage.getItem('after_user');
+  if(saved2){ try{ showUser(JSON.parse(saved2)); }catch(e){} }
+})();
+</script>
+</body>
+</html>
